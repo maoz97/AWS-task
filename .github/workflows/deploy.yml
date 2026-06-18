@@ -1,0 +1,63 @@
+##########################################################################
+# GitHub Actions Workflow: AWS Infrastructure Continuous Deployment (CD) #
+##########################################################################
+
+# This workflow automates the deployment of the serverless AWS infrastructure
+# utilizing the AWS Cloud Development Kit (CDK). It runs within an isolated
+# Ubuntu runner and ensures idempotent, safe deployments to the target environment.
+
+
+name: Deploy AWS Infrastructure
+
+# Workflow Triggers
+on:
+  # Enables manual execution via the GitHub Actions console/UI 
+  workflow_dispatch: 
+
+jobs:
+  deploy:
+    name: Build and Deploy Stack
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Clone the repository into the runner workspace
+      - name: Checkout Source Code
+        uses: actions/checkout@v3
+
+      # Initialize Node.js environment required by the core AWS CDK engine
+      - name: Setup Node.js Runtime
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      # Initialize Python runtime for synthesizing the CDK application code
+      - name: Setup Python Runtime
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      # Install the AWS CDK Command Line Interface globally on the runner
+      - name: Install AWS CDK CLI
+        run: npm install -g aws-cdk
+
+      # Install Python dependencies required for infrastructure definition
+      - name: Install Python Dependencies
+        run: |
+          cd cdk_infrastructure
+          pip install -r requirements.txt
+
+      # Authenticate with AWS using encrypted repository secrets.
+      # This step securely establishes the IAM session bounds for the deployment.
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      # Synthesize and deploy cloud resources to AWS CloudFormation.
+      # '--require-approval never' is used to bypass manual prompt verification in CI/CD.
+      - name: Execute CDK Deployment
+        run: |
+          cd cdk_infrastructure
+          cdk deploy --require-approval never
