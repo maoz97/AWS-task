@@ -34,9 +34,9 @@ class CdkInfrastructureStack(Stack):
         """
         super().__init__(scope, construct_id, **kwargs)
 
-        ##########################################
-        # S3 Bucket & Deployment (Requirement 4) #
-        ##########################################
+        ##########################
+        # S3 Bucket & Deployment #
+        ##########################
         
         # Create the bucket. 
         bucket = s3.Bucket(
@@ -52,9 +52,9 @@ class CdkInfrastructureStack(Stack):
             destination_bucket=bucket
         )
 
-        # ==========================================
-        # SNS Topic & Subscription (Requirement 6)
-        # ==========================================
+        ############################
+        # SNS Topic & Subscription #
+        ############################
         
         # Create the SNS Topic for execution reports
         topic = sns.Topic(self, "AssignmentExecutionTopic")
@@ -62,9 +62,9 @@ class CdkInfrastructureStack(Stack):
         # Subscribe email to the topic 
         topic.add_subscription(subscriptions.EmailSubscription("maozbar100@gmail.com"))
 
-        # ==========================================
-        # 3. Lambda Function (Requirement 3)
-        # ==========================================
+        ###################
+        # Lambda Function #
+        ###################
         
         # Define the Lambda function, configure runtime, and inject environment variables
         my_lambda = _lambda.Function(
@@ -79,11 +79,10 @@ class CdkInfrastructureStack(Stack):
             timeout=Duration.seconds(15)
         )
 
-        # ==========================================
-        # 4. IAM Permissions - Least Privilege (Requirement 5)
-        # ==========================================
+        #####################################
+        # IAM Permissions - Least Privilege #
+        #####################################
         
         # Grant specific access rights to the Lambda execution role
-        # AWS CDK automatically creates the execution role and attaches the AWSLambdaBasicExecutionRole policy.
         bucket.grant_read(my_lambda)
         topic.grant_publish(my_lambda)
