@@ -20,31 +20,31 @@ To deploy and run this project locally, ensure you have the following installed 
 
 ## Local Deployment Instructions
 
-1. Clone the repository and navigate to the infrastructure directory:
-   ```bash
-   cd cdk_infrastructure
-   ```
+**1. Clone the repository and navigate to the infrastructure directory:**
+```bash
+cd cdk_infrastructure
+```
 
-2. Activate the virtual environment and install the required Python dependencies:
-   ```bash
-   # On Windows
-   .venv\Scripts\activate
-   
-   # On Linux/macOS
-   # source .venv/bin/activate
-   
-   pip install -r requirements.txt
-   ```
+**2. Activate the virtual environment and install the required Python dependencies:**
+```bash
+# On Windows
+.venv\Scripts\activate
 
-3. Bootstrap the AWS environment (required only once per AWS account/region):
-   ```bash
-   cdk bootstrap
-   ```
+# On Linux/macOS
+# source .venv/bin/activate
 
-4. Deploy the infrastructure stack to your AWS account:
-   ```bash
-   cdk deploy
-   ```
+pip install -r requirements.txt
+```
+
+**3. Bootstrap the AWS environment (required only once per AWS account/region):**
+```bash
+cdk bootstrap
+```
+
+**4. Deploy the infrastructure stack to your AWS account:**
+```bash
+cdk deploy
+```
 
 *Note: Upon successful deployment, an SNS subscription confirmation email will be sent to the configured address. You must confirm this subscription to receive the Lambda execution reports.*
 
@@ -53,9 +53,9 @@ To deploy and run this project locally, ensure you have the following installed 
 This repository includes a GitHub Actions workflow (`.github/workflows/deploy.yml`) for continuous deployment.
 
 To trigger the deployment via GitHub:
-1. Navigate to the "Actions" tab in the repository.
-2. Select the "Deploy AWS Infrastructure" workflow.
-3. Click "Run workflow" on the main branch.
+* Navigate to the "Actions" tab in the repository.
+* Select the "Deploy AWS Infrastructure" workflow.
+* Click "Run workflow" on the main branch.
 
 *Configuration requirement: Ensure `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` are securely stored in the repository's Action Secrets.*
 
