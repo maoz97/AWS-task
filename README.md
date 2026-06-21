@@ -24,7 +24,7 @@ To deploy and run this project locally, ensure you have the following installed 
 ```bash
    cd cdk_infrastructure
 
-2 Activate the virtual environment and install the required Python dependencies:
+2. Activate the virtual environment and install the required Python dependencies:
 
     # On Windows
    .venv\Scripts\activate
@@ -34,11 +34,11 @@ To deploy and run this project locally, ensure you have the following installed 
    
    pip install -r requirements.txt
 
-3 Bootstrap the AWS environment (required only once per AWS account/region):
+3. Bootstrap the AWS environment (required only once per AWS account/region):
 
     cdk bootstrap
 
-4 Deploy the infrastructure stack to your AWS account:
+4. Deploy the infrastructure stack to your AWS account:
 
     cdk deploy
 
