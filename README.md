@@ -21,57 +21,61 @@ To deploy and run this project locally, ensure you have the following installed 
 ## Local Deployment Instructions
 
 1. Clone the repository and navigate to the infrastructure directory:
-```bash
+   ```bash
    cd cdk_infrastructure
+   ```
 
 2. Activate the virtual environment and install the required Python dependencies:
-
-    # On Windows
+   ```bash
+   # On Windows
    .venv\Scripts\activate
    
    # On Linux/macOS
    # source .venv/bin/activate
    
    pip install -r requirements.txt
+   ```
 
 3. Bootstrap the AWS environment (required only once per AWS account/region):
-
-    cdk bootstrap
+   ```bash
+   cdk bootstrap
+   ```
 
 4. Deploy the infrastructure stack to your AWS account:
+   ```bash
+   cdk deploy
+   ```
 
-    cdk deploy
+*Note: Upon successful deployment, an SNS subscription confirmation email will be sent to the configured address. You must confirm this subscription to receive the Lambda execution reports.*
 
-Note: Upon successful deployment, an SNS subscription confirmation email will be sent to the configured address. You must confirm this subscription to receive the Lambda execution reports.
+## CI/CD Pipeline
 
-
-CI/CD Pipeline
-This repository includes a GitHub Actions workflow (.github/workflows/deploy.yml) for continuous deployment.
+This repository includes a GitHub Actions workflow (`.github/workflows/deploy.yml`) for continuous deployment.
 
 To trigger the deployment via GitHub:
+1. Navigate to the "Actions" tab in the repository.
+2. Select the "Deploy AWS Infrastructure" workflow.
+3. Click "Run workflow" on the main branch.
 
-Navigate to the "Actions" tab in the repository.
+*Configuration requirement: Ensure `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` are securely stored in the repository's Action Secrets.*
 
-Select the "Deploy AWS Infrastructure" workflow.
+## Manual Testing
 
-Click "Run workflow" on the main branch.
+To verify the system functionality end-to-end, you can manually invoke the Lambda function using the AWS CLI. Replace `us-east-1` with your deployed region if necessary:
 
-Configuration requirement: Ensure AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY are securely stored in the repository's Action Secrets.
-
-Manual Testing
-To verify the system functionality end-to-end, you can manually invoke the Lambda function using the AWS CLI. Replace us-east-1 with your deployed region if necessary:
-
+```bash
 aws lambda invoke --function-name $(aws lambda list-functions --region us-east-1 --query "Functions[?contains(FunctionName, 'AssignmentLambda')].FunctionName" --output text) --region us-east-1 response.json
+```
 
 Expected outcomes:
+* The CLI returns a `StatusCode: 200`.
+* A `response.json` file is generated locally with the execution details.
+* An email containing the list of S3 files is delivered to your inbox.
 
-The CLI returns a StatusCode: 200.
+## Cleanup
 
-A response.json file is generated locally with the execution details.
-
-An email containing the list of S3 files is delivered to your inbox.
-
-Cleanup
 To prevent ongoing charges on your AWS account, destroy the deployed resources once testing is complete:
 
+```bash
 cdk destroy
+```
